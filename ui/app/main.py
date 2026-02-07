@@ -133,6 +133,8 @@ async def create_tool(
     access_owner_email: str = Form(""),
     access_process: str = Form(""),
     tool_url: str = Form(""),
+    experts: str = Form(""),
+    documentation_links: str = Form(""),
     status: str = Form("Active"),
     sort_order: int = Form(0),
     is_featured: Optional[bool] = Form(False),
@@ -147,6 +149,8 @@ async def create_tool(
         "access_owner_email": access_owner_email or None,
         "access_process": access_process or None,
         "tool_url": tool_url or None,
+        "experts": _parse_experts(experts),
+        "documentation_links": _parse_documentation_links(documentation_links),
         "status": status,
         "sort_order": sort_order,
         "is_featured": bool(is_featured),
@@ -185,6 +189,8 @@ async def edit_tool(
     access_owner_email: str = Form(""),
     access_process: str = Form(""),
     tool_url: str = Form(""),
+    experts: str = Form(""),
+    documentation_links: str = Form(""),
     status: str = Form("Active"),
     sort_order: int = Form(0),
     is_featured: Optional[bool] = Form(False),
@@ -199,6 +205,8 @@ async def edit_tool(
         "access_owner_email": access_owner_email or None,
         "access_process": access_process or None,
         "tool_url": tool_url or None,
+        "experts": _parse_experts(experts),
+        "documentation_links": _parse_documentation_links(documentation_links),
         "status": status,
         "sort_order": sort_order,
         "is_featured": bool(is_featured),
@@ -291,21 +299,31 @@ async def analytics(request: Request):
 
 
 @app.post("/tools/{tool_id}/open")
-async def open_tool(tool_id: int, tool_url: str = Form(...), tool_title: str = Form(...)):
+async def open_tool(tool_id: int):
+    tool_response = await bff_request("GET", f"/tools/{tool_id}")
+    if tool_response.status_code != 200:
+        return RedirectResponse("/?error=tool", status_code=303)
+    tool = tool_response.json()
+    if tool.get("status") == "Planned" or not tool.get("tool_url"):
+        return RedirectResponse(f"/tools/{tool_id}", status_code=303)
     await bff_request(
         "POST",
         "/tool_access",
-        json={"tool_id": tool_id, "tool_title": tool_title, "action": "open_tool"},
+        json={"tool_id": tool_id, "tool_title": tool["title"], "action": "open_tool"},
     )
-    return RedirectResponse(tool_url, status_code=303)
+    return RedirectResponse(tool["tool_url"], status_code=303)
 
 
 @app.post("/tools/{tool_id}/view")
-async def view_tool(tool_id: int, tool_title: str = Form(...)):
+async def view_tool(tool_id: int):
+    tool_response = await bff_request("GET", f"/tools/{tool_id}")
+    if tool_response.status_code != 200:
+        return RedirectResponse("/", status_code=303)
+    tool = tool_response.json()
     await bff_request(
         "POST",
         "/tool_access",
-        json={"tool_id": tool_id, "tool_title": tool_title, "action": "view_modal"},
+        json={"tool_id": tool_id, "tool_title": tool["title"], "action": "view_modal"},
     )
     return RedirectResponse(f"/tools/{tool_id}", status_code=303)
 
