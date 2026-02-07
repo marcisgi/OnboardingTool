@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mx-auto w-full max-w-6xl px-6 py-8">
-  <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
-    <h2 class="text-xl font-semibold">Tool Dashboard</h2>
-    <p class="mt-1 text-sm text-slate-500">Discover, filter, and explore internal tools.</p>
+  <div class="rounded-3xl bg-white p-8 shadow-sm dark:bg-slate-800">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-semibold">Tool Dashboard</h2>
+        <p class="mt-1 text-sm text-slate-500">Discover, filter, and explore internal tools.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
+        <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Active</span>
+        <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-amber-400"></span>Deprecated</span>
+        <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-sky-400"></span>Planned</span>
+      </div>
+    </div>
     <form id="searchForm" class="mt-6 grid gap-4 md:grid-cols-4" method="get" action="/">
       <div class="md:col-span-2">
         <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Search</label>
-        <input
-          name="search"
-          id="searchInput"
-          value="{{ search }}"
-          placeholder="Search by title or category"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
-        />
+        <div class="relative mt-1">
+          <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+            <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+              <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"></circle>
+              <path d="M14 14l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </span>
+          <input
+            name="search"
+            id="searchInput"
+            value="{{ search }}"
+            placeholder="Search by title or category"
+            class="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          />
+        </div>
       </div>
       <div>
         <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</label>
         <select
           name="category"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
         >
           <option value="">All</option>
           {% for option in categories %}
@@ -31,7 +48,7 @@
         <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</label>
         <select
           name="status"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
         >
           <option value="">All</option>
           <option value="Active" {% if status == "Active" %}selected{% endif %}>Active</option>
@@ -44,10 +61,11 @@
 
   <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {% for tool in tools %}
-    <div class="group relative rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+    <div class="group relative rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
       <form method="post" action="/tools/{{ tool.id }}/view">
         <input type="hidden" name="tool_title" value="{{ tool.title }}" />
-        <button type="submit" class="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-slate-100 bg-slate-50 shadow-inner dark:border-slate-700 dark:bg-slate-900">
+        <button type="submit" class="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 bg-slate-50 shadow-inner dark:bg-slate-900
+          {% if tool.status == 'Active' %}border-emerald-400{% elif tool.status == 'Deprecated' %}border-amber-400{% else %}border-sky-400{% endif %}">
           {% if tool.has_logo %}
           <img src="/logos/{{ tool.id }}" alt="{{ tool.title }} logo" class="h-full w-full object-cover" />
           {% else %}
@@ -57,7 +75,7 @@
       </form>
       <p class="mt-4 text-sm font-semibold">{{ tool.title }}</p>
       <p class="text-xs text-slate-500">{{ tool.category }}</p>
-      <div class="pointer-events-none absolute inset-0 flex items-end rounded-2xl bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-4 py-4 opacity-0 transition group-hover:opacity-100">
+      <div class="pointer-events-none absolute inset-0 flex items-end rounded-3xl bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-4 py-4 opacity-0 transition group-hover:opacity-100">
         <div class="text-left text-xs text-white">
           <p class="font-semibold">{{ tool.title }}</p>
           <p class="opacity-80">{{ tool.category }} • {{ tool.status }}</p>
@@ -67,7 +85,7 @@
       </div>
     </div>
     {% else %}
-    <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800">
+    <div class="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800">
       No tools found yet. Add your first tool from the Manage Tools page.
     </div>
     {% endfor %}

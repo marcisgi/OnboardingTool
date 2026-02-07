@@ -2,29 +2,34 @@
 {% block content %}
 <section class="mx-auto w-full max-w-6xl px-6 py-8">
   <div class="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
-    <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+    <div class="rounded-3xl bg-white p-6 shadow-sm dark:bg-slate-800">
       <h2 class="text-lg font-semibold">Create Tool</h2>
+      {% if error %}
+      <div class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-600">
+        Unable to save the tool. Please check required fields and validation rules (URLs, emails, and unique titles).
+      </div>
+      {% endif %}
       <form class="mt-4 grid gap-4" method="post" action="/manage/tools">
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Title</label>
-          <input name="title" required class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+          <input name="title" required class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
         </div>
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</label>
-          <input name="category" required class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+          <input name="category" required class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
         </div>
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Description (rich text allowed)</label>
-          <textarea name="description" rows="4" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"></textarea>
+          <textarea name="description" rows="4" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"></textarea>
         </div>
         <div class="grid gap-4 md:grid-cols-2">
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tags (comma-separated)</label>
-            <input name="tags" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="tags" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
           </div>
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</label>
-            <select name="status" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
+            <select name="status" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
               <option>Active</option>
               <option>Deprecated</option>
               <option>Planned</option>
@@ -33,7 +38,7 @@
         </div>
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Owner Team</label>
-          <select id="ownerTeamSelect" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
+          <select id="ownerTeamSelect" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
             <option value="">Select team</option>
             {% for team in teams %}
             <option value="{{ team.id }}">{{ team.name }}</option>
@@ -44,25 +49,35 @@
         <div class="grid gap-4 md:grid-cols-2">
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Access Owner (select member)</label>
-            <select id="accessOwner" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
+            <select id="accessOwner" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
               <option value="">Select a team member</option>
             </select>
           </div>
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Access Process</label>
-            <input name="access_process" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="access_process" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
           </div>
         </div>
         <input type="hidden" name="access_owner_name" id="accessOwnerName" />
         <input type="hidden" name="access_owner_email" id="accessOwnerEmail" />
         <div class="grid gap-4 md:grid-cols-2">
           <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Experts (one per line: name | email | title | backup)</label>
+            <textarea name="experts" rows="3" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"></textarea>
+          </div>
+          <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Documentation (one per line: title | url | type)</label>
+            <textarea name="documentation_links" rows="3" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"></textarea>
+          </div>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tool URL</label>
-            <input name="tool_url" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="tool_url" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
           </div>
           <div class="grid gap-2">
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sort Order</label>
-            <input name="sort_order" type="number" value="0" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="sort_order" type="number" value="0" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
             <label class="flex items-center gap-2 text-xs text-slate-500">
               <input type="checkbox" name="is_featured" class="rounded border-slate-300" />
               Featured
@@ -73,11 +88,11 @@
       </form>
     </div>
 
-    <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+    <div class="rounded-3xl bg-white p-6 shadow-sm dark:bg-slate-800">
       <h2 class="text-lg font-semibold">Existing Tools</h2>
       <div class="mt-4 space-y-4">
         {% for tool in tools %}
-        <div class="rounded-xl border border-slate-200 p-4 text-sm dark:border-slate-700">
+        <div class="rounded-2xl border border-slate-200 p-4 text-sm dark:border-slate-700">
           <div class="flex items-center justify-between">
             <div>
               <p class="font-semibold">{{ tool.title }}</p>
@@ -89,25 +104,29 @@
               </form>
             </div>
           </div>
-          <details class="mt-3 rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+          <details class="mt-3 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
             <summary class="cursor-pointer text-xs font-semibold uppercase tracking-wide text-slate-500">Edit Tool</summary>
             <form class="mt-3 grid gap-3 text-xs" method="post" action="/manage/tools/{{ tool.id }}/edit">
-              <input name="title" value="{{ tool.title }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <input name="category" value="{{ tool.category }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <textarea name="description" rows="3" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">{{ tool.description or '' }}</textarea>
-              <input name="tags" value="{{ tool.tags | join(', ') }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <input name="owner_teams" value="{{ tool.owner_teams | join(', ') }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <input name="access_owner_name" value="{{ tool.access_owner_name or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <input name="access_owner_email" value="{{ tool.access_owner_email or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <input name="access_process" value="{{ tool.access_process or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <input name="tool_url" value="{{ tool.tool_url or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <input name="title" value="{{ tool.title }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <input name="category" value="{{ tool.category }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <textarea name="description" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">{{ tool.description or '' }}</textarea>
+              <input name="tags" value="{{ tool.tags | join(', ') }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <input name="owner_teams" value="{{ tool.owner_teams | join(', ') }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <input name="access_owner_name" value="{{ tool.access_owner_name or '' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <input name="access_owner_email" value="{{ tool.access_owner_email or '' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <input name="access_process" value="{{ tool.access_process or '' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+              <textarea name="experts" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">{% for expert in tool.experts %}{{ expert.name }} | {{ expert.email }} | {{ expert.title or '' }} | {% if expert.is_backup %}backup{% endif %}{% if not loop.last %}
+{% endif %}{% endfor %}</textarea>
+              <textarea name="documentation_links" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">{% for link in tool.documentation_links %}{{ link.title }} | {{ link.url }} | {{ link.type or '' }}{% if not loop.last %}
+{% endif %}{% endfor %}</textarea>
+              <input name="tool_url" value="{{ tool.tool_url or '' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
               <div class="grid gap-2 md:grid-cols-2">
-                <select name="status" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">
+                <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">
                   <option value="Active" {% if tool.status == "Active" %}selected{% endif %}>Active</option>
                   <option value="Deprecated" {% if tool.status == "Deprecated" %}selected{% endif %}>Deprecated</option>
                   <option value="Planned" {% if tool.status == "Planned" %}selected{% endif %}>Planned</option>
                 </select>
-                <input name="sort_order" type="number" value="{{ tool.sort_order or 0 }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
+                <input name="sort_order" type="number" value="{{ tool.sort_order or 0 }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
               </div>
               <label class="flex items-center gap-2 text-xs text-slate-500">
                 <input type="checkbox" name="is_featured" {% if tool.is_featured %}checked{% endif %} />

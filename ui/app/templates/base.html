@@ -6,21 +6,30 @@
     <title>Application Catalog</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="min-h-full bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+  <body class="min-h-full bg-slate-50 text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-100">
     <div class="flex min-h-screen flex-col">
-      <header class="border-b border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Internal Platform</p>
-            <h1 class="text-2xl font-semibold">Application Catalog</h1>
+      <header class="border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
+        <div class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+          <div class="flex items-center gap-3">
+            <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-sm">
+              <svg aria-hidden="true" class="h-6 w-6" viewBox="0 0 24 24" fill="none">
+                <path d="M7 4h10l4 8-4 8H7L3 12l4-8Z" stroke="currentColor" stroke-width="1.5" />
+                <path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Internal Platform</p>
+              <h1 class="text-xl font-semibold">Application Catalog</h1>
+            </div>
           </div>
-          <nav class="flex items-center gap-4 text-sm">
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/">Dashboard</a>
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/manage/tools">Manage Tools</a>
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/manage/teams">Manage Teams</a>
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/analytics">Analytics</a>
-            <button id="themeToggle" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 transition hover:border-slate-400 dark:border-slate-600 dark:text-slate-200">
-              Toggle Theme
+          <nav class="flex flex-wrap items-center gap-4 text-sm">
+            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/">Dashboard</a>
+            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/manage/tools">Manage Tools</a>
+            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/manage/teams">Manage Teams</a>
+            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/analytics">Analytics</a>
+            <button id="themeToggle" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 transition hover:border-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">
+              <span id="themeToggleIcon">🌙</span>
+              Theme
             </button>
           </nav>
         </div>
@@ -38,10 +47,13 @@
       if (storedTheme === "dark") {
         root.classList.add("dark");
       }
+      const toggleIcon = document.getElementById("themeToggleIcon");
+      toggleIcon.textContent = root.classList.contains("dark") ? "☀️" : "🌙";
       document.getElementById("themeToggle").addEventListener("click", () => {
         root.classList.toggle("dark");
         const theme = root.classList.contains("dark") ? "dark" : "light";
         localStorage.setItem("theme", theme);
+        toggleIcon.textContent = root.classList.contains("dark") ? "☀️" : "🌙";
       });
     </script>
   </body>

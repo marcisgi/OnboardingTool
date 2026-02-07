@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mx-auto w-full max-w-5xl px-6 py-8">
-  <div class="rounded-2xl bg-white p-8 shadow-sm dark:bg-slate-800">
+  <div class="rounded-3xl bg-white p-8 shadow-sm dark:bg-slate-800">
     <div class="flex flex-col gap-6 md:flex-row md:items-start">
       <div class="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-slate-100 bg-slate-50 shadow-inner dark:border-slate-700 dark:bg-slate-900">
         {% if tool.has_logo %}
@@ -40,6 +40,16 @@
       </div>
       <div class="space-y-4">
         <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Owner Teams</h3>
+          <ul class="mt-2 text-sm text-slate-600 dark:text-slate-200">
+            {% for name in owner_team_names %}
+            <li>{{ name }}</li>
+            {% else %}
+            <li class="text-slate-500">No owner teams assigned.</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
           <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Access Owner</h3>
           <p class="text-sm">{{ tool.access_owner_name or "Unassigned" }}</p>
           <p class="text-xs text-slate-500">{{ tool.access_owner_email or "" }}</p>
@@ -61,6 +71,9 @@
             {% for link in tool.documentation_links %}
             <li>
               <a class="text-indigo-600 hover:underline" href="{{ link.url }}" target="_blank" rel="noreferrer">{{ link.title }}</a>
+              {% if link.type %}
+              <span class="ml-2 text-xs text-slate-400">{{ link.type }}</span>
+              {% endif %}
             </li>
             {% else %}
             <li class="text-slate-500">No docs available.</li>
