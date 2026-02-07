@@ -4,23 +4,113 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Application Catalog</title>
+    <script>
+      tailwind = {
+        config: {
+          theme: {
+            extend: {
+              colors: {
+                brand: {
+                  50: "#eef6ff",
+                  100: "#d9eaff",
+                  200: "#b3d4ff",
+                  500: "#2f7bff",
+                  600: "#1f5fe0",
+                  700: "#1b4bb5",
+                },
+                base: {
+                  25: "#fbfcff",
+                  50: "#f5f7fb",
+                  100: "#e8edf5",
+                  200: "#cad5e6",
+                  700: "#1f2a44",
+                  800: "#182133",
+                  900: "#101827",
+                },
+              },
+              boxShadow: {
+                "soft-xl": "0 20px 45px -35px rgba(15, 23, 42, 0.6)",
+              },
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="min-h-full bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+  <body class="min-h-full bg-base-50 text-slate-900 dark:bg-base-900 dark:text-slate-100">
     <div class="flex min-h-screen flex-col">
-      <header class="border-b border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <header class="border-b border-slate-200/80 bg-white/80 backdrop-blur dark:border-slate-700/80 dark:bg-base-900/80">
         <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Internal Platform</p>
-            <h1 class="text-2xl font-semibold">Application Catalog</h1>
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 text-white shadow-soft-xl">
+              <svg aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 2l7 4v8l-7 4-7-4V6l7-4z" />
+                <path d="M12 2v20" />
+                <path d="M5 6l7 4 7-4" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Internal Platform</p>
+              <h1 class="text-xl font-semibold text-slate-900 dark:text-white">Application Catalog</h1>
+            </div>
           </div>
-          <nav class="flex items-center gap-4 text-sm">
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/">Dashboard</a>
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/manage/tools">Manage Tools</a>
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/manage/teams">Manage Teams</a>
-            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/analytics">Analytics</a>
-            <button id="themeToggle" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 transition hover:border-slate-400 dark:border-slate-600 dark:text-slate-200">
-              Toggle Theme
+          <nav class="flex items-center gap-2 text-sm">
+            <a class="flex items-center gap-2 rounded-full px-3 py-2 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-base-800" href="/">
+              <span class="inline-flex h-5 w-5 items-center justify-center">
+                <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M3 12l9-9 9 9" />
+                  <path d="M9 21V9h6v12" />
+                </svg>
+              </span>
+              Dashboard
+            </a>
+            <a class="flex items-center gap-2 rounded-full px-3 py-2 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-base-800" href="/analytics">
+              <span class="inline-flex h-5 w-5 items-center justify-center">
+                <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M3 3v18h18" />
+                  <path d="M7 15l4-4 4 4 5-6" />
+                </svg>
+              </span>
+              Analytics
+            </a>
+            <a class="flex items-center gap-2 rounded-full px-3 py-2 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-base-800" href="/manage/teams">
+              <span class="inline-flex h-5 w-5 items-center justify-center">
+                <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3z" />
+                  <path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7s-3 1.3-3 3 1.3 3 3 3z" />
+                  <path d="M8 13c-2.8 0-5 1.6-5 3.6V19h10v-2.4C13 14.6 10.8 13 8 13z" />
+                  <path d="M16 11c-2.2 0-4 1.4-4 3.2V19h9v-2.4C21 14.1 18.8 11 16 11z" />
+                </svg>
+              </span>
+              Teams
+            </a>
+            <a class="flex items-center gap-2 rounded-full px-3 py-2 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-base-800" href="/manage/tools">
+              <span class="inline-flex h-5 w-5 items-center justify-center">
+                <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M4 7h16" />
+                  <path d="M4 12h16" />
+                  <path d="M4 17h16" />
+                </svg>
+              </span>
+              Tools
+            </a>
+            <button id="themeToggle" class="ml-2 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500 transition hover:border-slate-300 dark:border-slate-700 dark:bg-base-800 dark:text-slate-200" type="button">
+              <span class="sr-only">Toggle theme</span>
+              <svg id="themeIconSun" aria-hidden="true" class="hidden h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 4V2" />
+                <path d="M12 22v-2" />
+                <path d="M4.9 4.9L3.5 3.5" />
+                <path d="M20.5 20.5l-1.4-1.4" />
+                <path d="M2 12h2" />
+                <path d="M22 12h-2" />
+                <path d="M4.9 19.1L3.5 20.5" />
+                <path d="M20.5 3.5l-1.4 1.4" />
+                <circle cx="12" cy="12" r="4" />
+              </svg>
+              <svg id="themeIconMoon" aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" />
+              </svg>
             </button>
           </nav>
         </div>
@@ -28,7 +118,7 @@
       <main class="flex-1">
         {% block content %}{% endblock %}
       </main>
-      <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
+      <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500 dark:border-slate-700 dark:bg-base-900">
         Application Catalog • Internal Use Only
       </footer>
     </div>
@@ -38,10 +128,17 @@
       if (storedTheme === "dark") {
         root.classList.add("dark");
       }
+      const setIcons = () => {
+        const isDark = root.classList.contains("dark");
+        document.getElementById("themeIconSun").classList.toggle("hidden", !isDark);
+        document.getElementById("themeIconMoon").classList.toggle("hidden", isDark);
+      };
+      setIcons();
       document.getElementById("themeToggle").addEventListener("click", () => {
         root.classList.toggle("dark");
         const theme = root.classList.contains("dark") ? "dark" : "light";
         localStorage.setItem("theme", theme);
+        setIcons();
       });
     </script>
   </body>
