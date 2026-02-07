@@ -70,10 +70,17 @@
       if (storedTheme === "dark") {
         root.classList.add("dark");
       }
+      const setIcons = () => {
+        const isDark = root.classList.contains("dark");
+        document.getElementById("themeIconSun").classList.toggle("hidden", !isDark);
+        document.getElementById("themeIconMoon").classList.toggle("hidden", isDark);
+      };
+      setIcons();
       document.getElementById("themeToggle").addEventListener("click", () => {
         root.classList.toggle("dark");
         const theme = root.classList.contains("dark") ? "dark" : "light";
         localStorage.setItem("theme", theme);
+        setIcons();
       });
     </script>
   </body>

@@ -79,6 +79,7 @@ async def dashboard(request: Request, search: Optional[str] = None, category: Op
         {
             "request": request,
             "tools": tools,
+            "tool_count": len(tools),
             "categories": categories,
             "search": search or "",
             "category": category or "",
