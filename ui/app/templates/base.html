@@ -4,32 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Application Catalog</title>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              base44: {
+                50: "#f2f6ff",
+                100: "#e4edff",
+                200: "#c9dbff",
+                300: "#a6c2ff",
+                400: "#7ea2ff",
+                500: "#4d7dff",
+                600: "#2f5cf4",
+                700: "#2346c9",
+                800: "#1f3aa2",
+                900: "#1d3380",
+              },
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="min-h-full bg-slate-50 text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-100">
+  <body class="min-h-full bg-gradient-to-b from-slate-50 to-slate-100 text-slate-900 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
     <div class="flex min-h-screen flex-col">
-      <header class="border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
-        <div class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+      <header class="border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
+        <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <div class="flex items-center gap-3">
-            <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-sm">
-              <svg aria-hidden="true" class="h-6 w-6" viewBox="0 0 24 24" fill="none">
-                <path d="M7 4h10l4 8-4 8H7L3 12l4-8Z" stroke="currentColor" stroke-width="1.5" />
-                <path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 via-indigo-500 to-purple-500 text-white shadow-md">
+              <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3l7.794 4.5v9L12 21l-7.794-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.5" />
+                <path d="M12 7.5v9" stroke="currentColor" stroke-width="1.5" />
+                <path d="M7.5 9.75l9 5.25" stroke="currentColor" stroke-width="1.5" />
+                <path d="M16.5 9.75l-9 5.25" stroke="currentColor" stroke-width="1.5" />
               </svg>
-            </span>
+            </div>
             <div>
-              <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Internal Platform</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Internal Platform</p>
               <h1 class="text-xl font-semibold">Application Catalog</h1>
             </div>
           </div>
-          <nav class="flex flex-wrap items-center gap-4 text-sm">
-            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/">Dashboard</a>
-            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/manage/tools">Manage Tools</a>
-            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/manage/teams">Manage Teams</a>
-            <a class="font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-200" href="/analytics">Analytics</a>
-            <button id="themeToggle" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 transition hover:border-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">
-              <span id="themeToggleIcon">🌙</span>
-              Theme
+          <nav class="flex items-center gap-4 text-sm">
+            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/">Dashboard</a>
+            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/manage/tools">Manage Tools</a>
+            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/manage/teams">Manage Teams</a>
+            <a class="font-medium text-slate-600 hover:text-slate-900 dark:text-slate-200" href="/analytics">Analytics</a>
+            <button id="themeToggle" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 transition hover:border-base44-300 hover:text-base44-700 dark:border-slate-700 dark:text-slate-200">
+              Toggle Theme
             </button>
           </nav>
         </div>
@@ -37,7 +60,7 @@
       <main class="flex-1">
         {% block content %}{% endblock %}
       </main>
-      <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
+      <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900">
         Application Catalog • Internal Use Only
       </footer>
     </div>
@@ -47,13 +70,17 @@
       if (storedTheme === "dark") {
         root.classList.add("dark");
       }
-      const toggleIcon = document.getElementById("themeToggleIcon");
-      toggleIcon.textContent = root.classList.contains("dark") ? "☀️" : "🌙";
+      const setIcons = () => {
+        const isDark = root.classList.contains("dark");
+        document.getElementById("themeIconSun").classList.toggle("hidden", !isDark);
+        document.getElementById("themeIconMoon").classList.toggle("hidden", isDark);
+      };
+      setIcons();
       document.getElementById("themeToggle").addEventListener("click", () => {
         root.classList.toggle("dark");
         const theme = root.classList.contains("dark") ? "dark" : "light";
         localStorage.setItem("theme", theme);
-        toggleIcon.textContent = root.classList.contains("dark") ? "☀️" : "🌙";
+        setIcons();
       });
     </script>
   </body>
