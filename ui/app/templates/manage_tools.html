@@ -4,35 +4,30 @@
   <div class="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
     <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
       <h2 class="text-lg font-semibold">Create Tool</h2>
-      {% if error %}
-      <div class="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
-        {{ error }}
-      </div>
-      {% endif %}
       <form class="mt-4 grid gap-4" method="post" action="/manage/tools">
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Title</label>
-          <input name="title" value="{{ form_values.title or '' }}" required class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+          <input name="title" required class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
         </div>
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</label>
-          <input name="category" value="{{ form_values.category or '' }}" required class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+          <input name="category" required class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
         </div>
         <div>
           <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Description (rich text allowed)</label>
-          <textarea name="description" rows="4" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">{{ form_values.description or '' }}</textarea>
+          <textarea name="description" rows="4" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"></textarea>
         </div>
         <div class="grid gap-4 md:grid-cols-2">
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tags (comma-separated)</label>
-            <input name="tags" value="{{ form_values.tags or '' }}" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="tags" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
           </div>
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</label>
             <select name="status" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">
-              <option {% if form_values.status == "Active" %}selected{% endif %}>Active</option>
-              <option {% if form_values.status == "Deprecated" %}selected{% endif %}>Deprecated</option>
-              <option {% if form_values.status == "Planned" %}selected{% endif %}>Planned</option>
+              <option>Active</option>
+              <option>Deprecated</option>
+              <option>Planned</option>
             </select>
           </div>
         </div>
@@ -44,7 +39,7 @@
             <option value="{{ team.id }}">{{ team.name }}</option>
             {% endfor %}
           </select>
-          <input type="hidden" name="owner_teams" id="ownerTeamsInput" value="{{ form_values.owner_teams or '' }}" />
+          <input type="hidden" name="owner_teams" id="ownerTeamsInput" />
         </div>
         <div class="grid gap-4 md:grid-cols-2">
           <div>
@@ -55,29 +50,21 @@
           </div>
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Access Process</label>
-            <input name="access_process" value="{{ form_values.access_process or '' }}" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="access_process" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
           </div>
         </div>
         <input type="hidden" name="access_owner_name" id="accessOwnerName" />
         <input type="hidden" name="access_owner_email" id="accessOwnerEmail" />
-        <div>
-          <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Experts (name | email | title | backup)</label>
-          <textarea name="experts" rows="3" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">{{ form_values.experts or '' }}</textarea>
-        </div>
-        <div>
-          <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Documentation Links (title | url | type)</label>
-          <textarea name="documentation_links" rows="3" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900">{{ form_values.documentation_links or '' }}</textarea>
-        </div>
         <div class="grid gap-4 md:grid-cols-2">
           <div>
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tool URL</label>
-            <input name="tool_url" value="{{ form_values.tool_url or '' }}" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="tool_url" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
           </div>
           <div class="grid gap-2">
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sort Order</label>
-            <input name="sort_order" type="number" value="{{ form_values.sort_order or 0 }}" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
+            <input name="sort_order" type="number" value="0" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900" />
             <label class="flex items-center gap-2 text-xs text-slate-500">
-              <input type="checkbox" name="is_featured" class="rounded border-slate-300" {% if form_values.is_featured %}checked{% endif %} />
+              <input type="checkbox" name="is_featured" class="rounded border-slate-300" />
               Featured
             </label>
           </div>
@@ -114,8 +101,6 @@
               <input name="access_owner_email" value="{{ tool.access_owner_email or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
               <input name="access_process" value="{{ tool.access_process or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
               <input name="tool_url" value="{{ tool.tool_url or '' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900" />
-              <textarea name="experts" rows="3" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">{% for expert in tool.experts %}{{ expert.name }} | {{ expert.email }} | {{ expert.title or '' }} | {{ 'backup' if expert.is_backup else '' }}{% if not loop.last %}&#10;{% endif %}{% endfor %}</textarea>
-              <textarea name="documentation_links" rows="3" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">{% for link in tool.documentation_links %}{{ link.title }} | {{ link.url }} | {{ link.type or '' }}{% if not loop.last %}&#10;{% endif %}{% endfor %}</textarea>
               <div class="grid gap-2 md:grid-cols-2">
                 <select name="status" class="w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-600 dark:bg-slate-900">
                   <option value="Active" {% if tool.status == "Active" %}selected{% endif %}>Active</option>
@@ -182,11 +167,6 @@
     ownerTeamsInput.value = event.target.value ? `${event.target.value}` : "";
     renderMembers(event.target.value);
   });
-
-  if (ownerTeamsInput.value) {
-    ownerTeamSelect.value = ownerTeamsInput.value;
-    renderMembers(ownerTeamsInput.value);
-  }
 
   accessOwner.addEventListener("change", (event) => {
     const selected = event.target.selectedOptions[0];

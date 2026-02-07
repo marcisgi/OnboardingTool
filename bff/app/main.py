@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 from typing import List, Optional
 
 import httpx
@@ -18,11 +19,9 @@ from .schemas import (
     ToolAccessCreate,
     ToolAccessRead,
     ToolBulkRequest,
-    ToolBulkUpsertRequest,
     ToolCreate,
     ToolRead,
     ToolUpdate,
-    ToolUpsert,
 )
 
 app = FastAPI(title="Application Catalog BFF", docs_url="/api/docs", redoc_url=None)
@@ -91,48 +90,6 @@ def bulk_create_tools(payload: ToolBulkRequest, db: Session = Depends(get_db)):
     for record in created:
         db.refresh(record)
     return created
-
-
-@app.post("/tools/upsert", response_model=ToolRead)
-def upsert_tool(tool: ToolUpsert, db: Session = Depends(get_db)):
-    record = None
-    if tool.id is not None:
-        record = db.query(OnboardingTool).filter(OnboardingTool.id == tool.id).first()
-    if record is None:
-        record = db.query(OnboardingTool).filter(OnboardingTool.title == tool.title).first()
-    payload = tool.model_dump(exclude={"id"})
-    if record:
-        for key, value in payload.items():
-            setattr(record, key, value)
-    else:
-        record = OnboardingTool(**payload)
-        db.add(record)
-    db.commit()
-    db.refresh(record)
-    return record
-
-
-@app.post("/tools/bulk/upsert", response_model=List[ToolRead])
-def bulk_upsert_tools(payload: ToolBulkUpsertRequest, db: Session = Depends(get_db)):
-    records = []
-    for tool in payload.tools:
-        record = None
-        if tool.id is not None:
-            record = db.query(OnboardingTool).filter(OnboardingTool.id == tool.id).first()
-        if record is None:
-            record = db.query(OnboardingTool).filter(OnboardingTool.title == tool.title).first()
-        tool_payload = tool.model_dump(exclude={"id"})
-        if record:
-            for key, value in tool_payload.items():
-                setattr(record, key, value)
-        else:
-            record = OnboardingTool(**tool_payload)
-            db.add(record)
-        records.append(record)
-    db.commit()
-    for record in records:
-        db.refresh(record)
-    return records
 
 
 @app.get("/tools/{tool_id}", response_model=ToolRead)
