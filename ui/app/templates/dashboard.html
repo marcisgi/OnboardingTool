@@ -1,73 +1,136 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mx-auto w-full max-w-6xl px-6 py-8">
-  <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
-    <h2 class="text-xl font-semibold">Tool Dashboard</h2>
-    <p class="mt-1 text-sm text-slate-500">Discover, filter, and explore internal tools.</p>
-    <form id="searchForm" class="mt-6 grid gap-4 md:grid-cols-4" method="get" action="/">
-      <div class="md:col-span-2">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Search</label>
-        <input
-          name="search"
-          id="searchInput"
-          value="{{ search }}"
-          placeholder="Search by title or category"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
-        />
+  <div class="flex flex-wrap items-center justify-between gap-6 rounded-3xl bg-white p-6 shadow-soft-xl dark:bg-base-800">
+    <div class="flex items-start gap-4">
+      <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-soft-xl">
+        <svg aria-hidden="true" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 2l7 4v8l-7 4-7-4V6l7-4z" />
+          <path d="M12 2v20" />
+          <path d="M5 6l7 4 7-4" />
+        </svg>
       </div>
       <div>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</label>
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">Application Catalog</h2>
+        <p class="mt-1 text-sm text-slate-500">Discover tools and find the right people to help you get started.</p>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500">
+      <span class="font-semibold uppercase tracking-widest text-slate-400">Status:</span>
+      <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span> Active</span>
+      <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-amber-500"></span> Deprecated</span>
+      <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-sky-500"></span> Planned</span>
+    </div>
+  </div>
+
+  <div class="mt-6 rounded-3xl border border-slate-200/70 bg-white p-5 shadow-soft-xl dark:border-slate-700/70 dark:bg-base-800">
+    <form id="searchForm" class="grid gap-4 md:grid-cols-[2fr_repeat(3,_minmax(0,_1fr))]" method="get" action="/">
+      <label class="relative flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Search
+        <div class="relative">
+          <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+            <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </span>
+          <input
+            name="search"
+            id="searchInput"
+            value="{{ search }}"
+            placeholder="Search tools, tags, descriptions..."
+            class="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm font-medium text-slate-700 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-base-900 dark:text-slate-100"
+          />
+        </div>
+      </label>
+      <label class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Category
         <select
           name="category"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-base-900 dark:text-slate-100"
         >
-          <option value="">All</option>
+          <option value="">All Categories</option>
           {% for option in categories %}
           <option value="{{ option }}" {% if option == category %}selected{% endif %}>{{ option }}</option>
           {% endfor %}
         </select>
-      </div>
-      <div>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</label>
+      </label>
+      <label class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Status
         <select
           name="status"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-base-900 dark:text-slate-100"
         >
-          <option value="">All</option>
+          <option value="">All Status</option>
           <option value="Active" {% if status == "Active" %}selected{% endif %}>Active</option>
           <option value="Deprecated" {% if status == "Deprecated" %}selected{% endif %}>Deprecated</option>
           <option value="Planned" {% if status == "Planned" %}selected{% endif %}>Planned</option>
         </select>
-      </div>
+      </label>
+      <label class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Sort
+        <select
+          name="sort"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-base-900 dark:text-slate-100"
+        >
+          <option value="featured">Featured First</option>
+        </select>
+      </label>
     </form>
+    <div class="mt-3 text-right text-xs text-slate-500">{{ tool_count }} tools</div>
   </div>
 
   <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {% for tool in tools %}
-    <div class="group relative rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+    <div class="group relative flex flex-col items-center gap-3 rounded-3xl border border-transparent px-4 py-6 text-center transition hover:-translate-y-1 hover:border-slate-200 hover:bg-white hover:shadow-soft-xl dark:hover:border-slate-700 dark:hover:bg-base-800">
       <form method="post" action="/tools/{{ tool.id }}/view">
         <input type="hidden" name="tool_title" value="{{ tool.title }}" />
-        <button type="submit" class="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-slate-100 bg-slate-50 shadow-inner dark:border-slate-700 dark:bg-slate-900">
-          {% if tool.has_logo %}
-          <img src="/logos/{{ tool.id }}" alt="{{ tool.title }} logo" class="h-full w-full object-cover" />
-          {% else %}
-          <span class="text-2xl font-bold text-indigo-500">{{ tool.title[:1] }}</span>
+        <button
+          type="submit"
+          class="relative mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 shadow-inner transition"
+        >
+          <span class="absolute inset-0 rounded-full border-4 {% if tool.status == 'Active' %}border-emerald-400{% elif tool.status == 'Deprecated' %}border-amber-400{% else %}border-sky-400{% endif %}"></span>
+          <span class="relative flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-full bg-white dark:bg-base-900">
+            {% if tool.has_logo %}
+            <img src="/logos/{{ tool.id }}" alt="{{ tool.title }} logo" class="h-full w-full object-cover" />
+            {% else %}
+            <span class="text-2xl font-bold text-brand-500">{{ tool.title[:1] }}</span>
+            {% endif %}
+          </span>
+          {% if tool.is_featured %}
+          <span class="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-white shadow">
+            <svg aria-hidden="true" class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 15l-5.9 3.1 1.1-6.6L.5 6.9l6.7-1L10 0l2.8 5.9 6.7 1-4.7 4.6 1.1 6.6z" />
+            </svg>
+          </span>
           {% endif %}
         </button>
       </form>
-      <p class="mt-4 text-sm font-semibold">{{ tool.title }}</p>
-      <p class="text-xs text-slate-500">{{ tool.category }}</p>
-      <div class="pointer-events-none absolute inset-0 flex items-end rounded-2xl bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-4 py-4 opacity-0 transition group-hover:opacity-100">
-        <div class="text-left text-xs text-white">
-          <p class="font-semibold">{{ tool.title }}</p>
-          <p class="opacity-80">{{ tool.category }} • {{ tool.status }}</p>
-          <p class="mt-2 line-clamp-3">{{ tool.description or "No description yet." }}</p>
-          <p class="mt-2 text-indigo-200">Primary expert: {{ tool.experts[0].name if tool.experts else "Unassigned" }}</p>
+      <div>
+        <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ tool.title }}</p>
+        <p class="text-xs text-slate-500">{{ tool.category }}</p>
+      </div>
+      <div class="pointer-events-none absolute left-1/2 top-full z-20 mt-4 w-64 -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-4 text-left text-xs text-slate-600 opacity-0 shadow-soft-xl transition group-hover:opacity-100 dark:border-slate-700 dark:bg-base-800 dark:text-slate-200">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-base-900">
+            {% if tool.has_logo %}
+            <img src="/logos/{{ tool.id }}" alt="{{ tool.title }} logo" class="h-full w-full rounded-lg object-cover" />
+            {% else %}
+            <span class="text-sm font-bold text-brand-500">{{ tool.title[:1] }}</span>
+            {% endif %}
+          </span>
+          <div>
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ tool.title }}</p>
+            <p class="text-[11px] text-slate-500">{{ tool.status }} • {{ tool.category }}</p>
+          </div>
         </div>
+        <p class="mt-3 line-clamp-3">{{ tool.description or "No description yet." }}</p>
+        <p class="mt-3 text-brand-600">Primary expert: {{ tool.experts[0].name if tool.experts else "Unassigned" }}</p>
+        <p class="mt-2 text-xs text-slate-400">Click for more details →</p>
       </div>
     </div>
     {% else %}
-    <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800">
+    <div class="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-base-800">
       No tools found yet. Add your first tool from the Manage Tools page.
     </div>
     {% endfor %}

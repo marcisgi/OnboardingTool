@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 import bleach
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, field_validator
@@ -50,7 +50,7 @@ class ToolBase(BaseModel):
     experts: List[Expert] = Field(default_factory=list)
     documentation_links: List[DocumentationLink] = Field(default_factory=list)
     tool_url: Optional[HttpUrl] = None
-    status: str = "Active"
+    status: Literal["Active", "Deprecated", "Planned"] = "Active"
     sort_order: int = 0
     is_featured: bool = False
     last_reviewed: Optional[date] = None
@@ -62,6 +62,14 @@ class ToolBase(BaseModel):
         if value is None:
             return value
         return bleach.clean(value, tags=ALLOWED_TAGS, attributes={"a": ["href", "title"]}, strip=True)
+
+    @field_validator("title", "category")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("Value is required.")
+        return cleaned
 
 
 class ToolCreate(ToolBase):
@@ -116,7 +124,7 @@ class TeamRead(TeamBase):
 class ToolAccessCreate(BaseModel):
     tool_id: int
     tool_title: str
-    action: str
+    action: Literal["open_tool", "view_modal"]
     user_email: Optional[EmailStr] = None
 
 
