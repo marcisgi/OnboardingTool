@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mx-auto w-full max-w-6xl px-6 py-8">
-  <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+  <div class="rounded-2xl bg-white/90 p-6 shadow-sm ring-1 ring-slate-200/70 backdrop-blur dark:bg-slate-900/70 dark:ring-slate-800">
     <h2 class="text-xl font-semibold">Tool Dashboard</h2>
     <p class="mt-1 text-sm text-slate-500">Discover, filter, and explore internal tools.</p>
     <form id="searchForm" class="mt-6 grid gap-4 md:grid-cols-4" method="get" action="/">
@@ -12,14 +12,14 @@
           id="searchInput"
           value="{{ search }}"
           placeholder="Search by title or category"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-base44-500 focus:outline-none focus:ring-1 focus:ring-base44-500 dark:border-slate-700 dark:bg-slate-900"
         />
       </div>
       <div>
         <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</label>
         <select
           name="category"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-base44-500 focus:outline-none focus:ring-1 focus:ring-base44-500 dark:border-slate-700 dark:bg-slate-900"
         >
           <option value="">All</option>
           {% for option in categories %}
@@ -31,7 +31,7 @@
         <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</label>
         <select
           name="status"
-          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-base44-500 focus:outline-none focus:ring-1 focus:ring-base44-500 dark:border-slate-700 dark:bg-slate-900"
         >
           <option value="">All</option>
           <option value="Active" {% if status == "Active" %}selected{% endif %}>Active</option>
@@ -44,14 +44,14 @@
 
   <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {% for tool in tools %}
-    <div class="group relative rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+    <div class="group relative rounded-2xl border border-slate-200/70 bg-white/90 p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-700 dark:bg-slate-900/70">
       <form method="post" action="/tools/{{ tool.id }}/view">
         <input type="hidden" name="tool_title" value="{{ tool.title }}" />
         <button type="submit" class="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-slate-100 bg-slate-50 shadow-inner dark:border-slate-700 dark:bg-slate-900">
           {% if tool.has_logo %}
           <img src="/logos/{{ tool.id }}" alt="{{ tool.title }} logo" class="h-full w-full object-cover" />
           {% else %}
-          <span class="text-2xl font-bold text-indigo-500">{{ tool.title[:1] }}</span>
+          <span class="text-2xl font-bold text-base44-600">{{ tool.title[:1] }}</span>
           {% endif %}
         </button>
       </form>
@@ -62,7 +62,7 @@
           <p class="font-semibold">{{ tool.title }}</p>
           <p class="opacity-80">{{ tool.category }} • {{ tool.status }}</p>
           <p class="mt-2 line-clamp-3">{{ tool.description or "No description yet." }}</p>
-          <p class="mt-2 text-indigo-200">Primary expert: {{ tool.experts[0].name if tool.experts else "Unassigned" }}</p>
+          <p class="mt-2 text-base44-200">Primary expert: {{ tool.experts[0].name if tool.experts else "Unassigned" }}</p>
         </div>
       </div>
     </div>
