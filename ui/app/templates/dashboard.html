@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="space-y-6">
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-4">
+        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.25a9.75 9.75 0 0 0-9.75 9.75c0 4.02 2.427 7.47 5.893 8.98.43.078.586-.187.586-.414 0-.204-.008-.746-.012-1.466-2.397.52-2.904-1.156-2.904-1.156-.392-.995-.957-1.26-.957-1.26-.783-.535.06-.524.06-.524.866.061 1.322.89 1.322.89.77 1.32 2.02.939 2.514.718.078-.557.302-.939.549-1.155-1.914-.218-3.926-.957-3.926-4.263 0-.941.337-1.71.89-2.313-.09-.219-.386-1.098.084-2.29 0 0 .725-.232 2.374.883A8.279 8.279 0 0 1 12 6.844a8.28 8.28 0 0 1 2.163.292c1.648-1.115 2.372-.883 2.372-.883.47 1.192.174 2.071.085 2.29.554.603.889 1.372.889 2.313 0 3.314-2.016 4.043-3.94 4.257.31.268.586.796.586 1.604 0 1.158-.01 2.09-.01 2.374 0 .23.155.497.593.412A9.75 9.75 0 0 0 21.75 12 9.75 9.75 0 0 0 12 2.25Z" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-2xl font-semibold">Application Catalog</h2>
+          <p class="text-sm text-slate-500">Discover tools and find the right people to help you get started</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-sm text-slate-500">
+        <span class="text-xs uppercase tracking-[0.3em] text-slate-400">Status:</span>
+        <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Active</span>
+        <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-amber-400"></span>Deprecated</span>
+        <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-blue-500"></span>Planned</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <form id="searchForm" class="grid gap-4 lg:grid-cols-[1.8fr_1fr_1fr_auto]" method="get" action="/">
+      <div class="relative">
+        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.9 14.32a7 7 0 1 1 1.414-1.414l3.387 3.387a1 1 0 0 1-1.414 1.414l-3.387-3.387ZM14 8a6 6 0 1 0-12 0 6 6 0 0 0 12 0Z" clip-rule="evenodd" />
+          </svg>
+        </span>
+        <input
+          name="search"
+          id="searchInput"
+          value="{{ search }}"
+          placeholder="Search tools, tags, descriptions..."
+          class="w-full rounded-xl border border-slate-200 bg-white px-9 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
+        />
+      </div>
+      <select
+        name="category"
+        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
+      >
+        <option value="">All Categories</option>
+        {% for option in categories %}
+        <option value="{{ option }}" {% if option == category %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <select
+        name="status"
+        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
+      >
+        <option value="">All Status</option>
+        <option value="Active" {% if status == "Active" %}selected{% endif %}>Active</option>
+        <option value="Deprecated" {% if status == "Deprecated" %}selected{% endif %}>Deprecated</option>
+        <option value="Planned" {% if status == "Planned" %}selected{% endif %}>Planned</option>
+      </select>
+      <select
+        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
+        aria-label="Sort"
+      >
+        <option>Featured First</option>
+        <option>Alphabetical</option>
+        <option>Recently Updated</option>
+      </select>
+    </form>
+    <div class="mt-2 text-right text-xs text-slate-500">{{ status_counts.total }} tools</div>
+  </div>
+
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    {% for tool in tools %}
+    {% set ring_color = 'border-emerald-400' if tool.status == 'Active' else 'border-amber-400' if tool.status == 'Deprecated' else 'border-blue-500' %}
+    <div class="group relative text-center">
+      <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-4 {{ ring_color }} bg-white shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
+        {% if tool.has_logo %}
+        <img src="/logos/{{ tool.id }}" alt="{{ tool.title }} logo" class="h-full w-full object-cover" />
+        {% else %}
+        <span class="text-2xl font-bold text-indigo-500">{{ tool.title[:1] }}</span>
+        {% endif %}
+      </div>
+      {% if tool.is_featured %}
+      <div class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] text-white">
+        ★
+      </div>
+      {% endif %}
+      <a href="/tools/{{ tool.id }}" class="mt-3 block text-sm font-semibold text-slate-900 hover:text-indigo-600">{{ tool.title }}</a>
+      <p class="text-xs text-slate-500">{{ tool.category }}</p>
+      <div class="pointer-events-none absolute left-10 top-20 z-10 w-72 translate-x-2 rounded-2xl border border-slate-200 bg-white shadow-xl opacity-0 transition group-hover:opacity-100 dark:border-slate-800 dark:bg-slate-900">
+        <div class="rounded-t-2xl bg-slate-900 px-4 py-3 text-left text-white dark:bg-slate-800">
+          <p class="text-sm font-semibold">{{ tool.title }}</p>
+          <div class="mt-1 flex items-center gap-2 text-xs">
+            <span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-emerald-200">{{ tool.status }}</span>
+            <span class="text-slate-300">{{ tool.category }}</span>
+          </div>
+        </div>
+        <div class="space-y-3 px-4 py-3 text-left text-xs text-slate-600 dark:text-slate-300">
+          <p>{{ tool.description or "No description yet." }}</p>
+          <div>
+            <p class="text-[11px] uppercase text-slate-400">Primary Expert</p>
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ tool.experts[0].name if tool.experts else "Unassigned" }}</p>
+          </div>
+          <a class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600" href="/tools/{{ tool.id }}">
+            Click for more details →
+          </a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white/80 p-12 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/70">
+      No tools found yet. Add your first tool from the Manage Tools page.
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<script>
+  const form = document.getElementById("searchForm");
+  const input = document.getElementById("searchInput");
+  let timer = null;
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => form.submit(), 400);
+  });
+</script>
+{% endblock %}
