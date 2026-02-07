@@ -111,7 +111,7 @@ async def tool_detail(request: Request, tool_id: int):
 
 
 @app.get("/manage/tools", response_class=HTMLResponse)
-async def manage_tools(request: Request):
+async def manage_tools(request: Request, error: Optional[str] = None):
     tools_response = await bff_request("GET", "/tools")
     teams_response = await bff_request("GET", "/teams")
     tools = tools_response.json() if tools_response.status_code == 200 else []
@@ -133,6 +133,8 @@ async def create_tool(
     access_owner_name: str = Form(""),
     access_owner_email: str = Form(""),
     access_process: str = Form(""),
+    experts: str = Form(""),
+    documentation_links: str = Form(""),
     tool_url: str = Form(""),
     experts: str = Form(""),
     documentation_links: str = Form(""),
@@ -149,6 +151,8 @@ async def create_tool(
         "access_owner_name": access_owner_name or None,
         "access_owner_email": access_owner_email or None,
         "access_process": access_process or None,
+        "experts": _parse_experts(experts),
+        "documentation_links": _parse_documentation_links(documentation_links),
         "tool_url": tool_url or None,
         "experts": _parse_experts(experts),
         "documentation_links": _parse_documentation_links(documentation_links),
@@ -189,6 +193,8 @@ async def edit_tool(
     access_owner_name: str = Form(""),
     access_owner_email: str = Form(""),
     access_process: str = Form(""),
+    experts: str = Form(""),
+    documentation_links: str = Form(""),
     tool_url: str = Form(""),
     experts: str = Form(""),
     documentation_links: str = Form(""),
@@ -205,6 +211,8 @@ async def edit_tool(
         "access_owner_name": access_owner_name or None,
         "access_owner_email": access_owner_email or None,
         "access_process": access_process or None,
+        "experts": _parse_experts(experts),
+        "documentation_links": _parse_documentation_links(documentation_links),
         "tool_url": tool_url or None,
         "experts": _parse_experts(experts),
         "documentation_links": _parse_documentation_links(documentation_links),
