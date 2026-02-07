@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import List, Literal, Optional
+from typing import List, Optional
 
 import bleach
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, field_validator
@@ -50,7 +50,7 @@ class ToolBase(BaseModel):
     experts: List[Expert] = Field(default_factory=list)
     documentation_links: List[DocumentationLink] = Field(default_factory=list)
     tool_url: Optional[HttpUrl] = None
-    status: Literal["Active", "Deprecated", "Planned"] = "Active"
+    status: str = "Active"
     sort_order: int = 0
     is_featured: bool = False
     last_reviewed: Optional[date] = None
@@ -86,14 +86,6 @@ class ToolBulkRequest(BaseModel):
     tools: List[ToolCreate]
 
 
-class ToolUpsert(ToolBase):
-    id: Optional[int] = None
-
-
-class ToolBulkUpsertRequest(BaseModel):
-    tools: List[ToolUpsert]
-
-
 class TeamMember(BaseModel):
     name: str
     email: EmailStr
@@ -124,7 +116,7 @@ class TeamRead(TeamBase):
 class ToolAccessCreate(BaseModel):
     tool_id: int
     tool_title: str
-    action: Literal["open_tool", "view_modal"]
+    action: str
     user_email: Optional[EmailStr] = None
 
 
