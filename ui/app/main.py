@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import httpx
 from fastapi import FastAPI, Form, Request
@@ -38,46 +38,7 @@ def _parse_owner_teams(value: str) -> list:
     return [int(item) for item in value.split(",") if item.strip().isdigit()]
 
 
-def _parse_experts(value: str) -> list[Dict[str, Any]]:
-    if not value:
-        return []
-    experts = []
-    for line in value.splitlines():
-        parts = [part.strip() for part in line.split("|")]
-        if len(parts) < 2:
-            continue
-        backup_value = parts[3].lower() if len(parts) > 3 and parts[3] else ""
-        is_backup = backup_value in {"backup", "true", "yes", "1"}
-        experts.append(
-            {
-                "name": parts[0],
-                "email": parts[1],
-                "title": parts[2] if len(parts) > 2 and parts[2] else None,
-                "is_backup": is_backup,
-            }
-        )
-    return experts
-
-
-def _parse_documentation_links(value: str) -> list[Dict[str, Any]]:
-    if not value:
-        return []
-    links = []
-    for line in value.splitlines():
-        parts = [part.strip() for part in line.split("|")]
-        if len(parts) < 2:
-            continue
-        links.append(
-            {
-                "title": parts[0],
-                "url": parts[1],
-                "type": parts[2] if len(parts) > 2 and parts[2] else None,
-            }
-        )
-    return links
-
-
-def _parse_team_members(value: str) -> list[Dict[str, Any]]:
+def _parse_members(value: str) -> List[Dict[str, Optional[str]]]:
     parsed_members = []
     if not value:
         return parsed_members
@@ -88,26 +49,24 @@ def _parse_team_members(value: str) -> list[Dict[str, Any]]:
                 {
                     "name": parts[0],
                     "email": parts[1],
-                    "title": parts[2] if len(parts) > 2 and parts[2] else None,
+                    "title": parts[2] if len(parts) > 2 else None,
                 }
             )
     return parsed_members
 
 
-def _extract_error_detail(response: httpx.Response) -> str:
+def _extract_error_message(response: httpx.Response, fallback: str) -> str:
     try:
         payload = response.json()
     except ValueError:
-        return "Request failed. Please check your input and try again."
-    detail = payload.get("detail") if isinstance(payload, dict) else None
-    if isinstance(detail, list):
-        messages = [item.get("msg", str(item)) for item in detail if isinstance(item, dict)]
-        return "; ".join(messages) or "Request failed. Please check your input and try again."
-    if isinstance(detail, dict):
-        return detail.get("msg", "Request failed. Please check your input and try again.")
-    if detail:
-        return str(detail)
-    return "Request failed. Please check your input and try again."
+        return fallback
+    if isinstance(payload, dict):
+        detail = payload.get("detail")
+        if isinstance(detail, list):
+            return " ".join(item.get("msg", "") for item in detail if isinstance(item, dict)).strip() or fallback
+        if isinstance(detail, str):
+            return detail
+    return fallback
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -137,8 +96,8 @@ async def tool_detail(request: Request, tool_id: int):
     tool = response.json()
     teams_response = await bff_request("GET", "/teams")
     teams = teams_response.json() if teams_response.status_code == 200 else []
-    team_lookup = {team["id"]: team for team in teams}
-    owner_teams = [team_lookup[team_id] for team_id in tool.get("owner_teams", []) if team_id in team_lookup]
+    team_lookup = {team["id"]: team["name"] for team in teams}
+    owner_team_names = [team_lookup.get(team_id, f"Team {team_id}") for team_id in tool.get("owner_teams", [])]
     await bff_request(
         "POST",
         "/tool_access",
@@ -146,7 +105,7 @@ async def tool_detail(request: Request, tool_id: int):
     )
     return templates.TemplateResponse(
         "tool_detail.html",
-        {"request": request, "tool": tool, "owner_teams": owner_teams, "bff_url": BFF_URL},
+        {"request": request, "tool": tool, "bff_url": BFF_URL, "owner_team_names": owner_team_names},
     )
 
 
@@ -158,7 +117,7 @@ async def manage_tools(request: Request):
     teams = teams_response.json() if teams_response.status_code == 200 else []
     return templates.TemplateResponse(
         "manage_tools.html",
-        {"request": request, "tools": tools, "teams": teams, "error": None},
+        {"request": request, "tools": tools, "teams": teams, "error_message": None},
     )
 
 
@@ -202,15 +161,11 @@ async def create_tool(
         teams_response = await bff_request("GET", "/teams")
         tools = tools_response.json() if tools_response.status_code == 200 else []
         teams = teams_response.json() if teams_response.status_code == 200 else []
+        error_message = _extract_error_message(response, "Unable to create tool.")
         return templates.TemplateResponse(
             "manage_tools.html",
-            {
-                "request": request,
-                "tools": tools,
-                "teams": teams,
-                "error": _extract_error_detail(response),
-            },
-            status_code=response.status_code,
+            {"request": request, "tools": tools, "teams": teams, "error_message": error_message},
+            status_code=400,
         )
     return RedirectResponse("/manage/tools", status_code=303)
 
@@ -262,15 +217,11 @@ async def edit_tool(
         teams_response = await bff_request("GET", "/teams")
         tools = tools_response.json() if tools_response.status_code == 200 else []
         teams = teams_response.json() if teams_response.status_code == 200 else []
+        error_message = _extract_error_message(response, "Unable to update tool.")
         return templates.TemplateResponse(
             "manage_tools.html",
-            {
-                "request": request,
-                "tools": tools,
-                "teams": teams,
-                "error": _extract_error_detail(response),
-            },
-            status_code=response.status_code,
+            {"request": request, "tools": tools, "teams": teams, "error_message": error_message},
+            status_code=400,
         )
     return RedirectResponse("/manage/tools", status_code=303)
 
@@ -294,24 +245,24 @@ async def import_logo(tool_id: int, logo_url: str = Form(...)):
 async def manage_teams(request: Request):
     response = await bff_request("GET", "/teams")
     teams = response.json() if response.status_code == 200 else []
-    return templates.TemplateResponse("manage_teams.html", {"request": request, "teams": teams, "error": None})
+    return templates.TemplateResponse(
+        "manage_teams.html",
+        {"request": request, "teams": teams, "error_message": None},
+    )
 
 
 @app.post("/manage/teams")
 async def create_team(request: Request, name: str = Form(...), description: str = Form(""), members: str = Form("")):
-    payload = {"name": name, "description": description, "members": _parse_team_members(members)}
+    payload = {"name": name, "description": description, "members": _parse_members(members)}
     response = await bff_request("POST", "/teams", json=payload)
     if response.status_code != 200:
         teams_response = await bff_request("GET", "/teams")
         teams = teams_response.json() if teams_response.status_code == 200 else []
+        error_message = _extract_error_message(response, "Unable to create team.")
         return templates.TemplateResponse(
             "manage_teams.html",
-            {
-                "request": request,
-                "teams": teams,
-                "error": _extract_error_detail(response),
-            },
-            status_code=response.status_code,
+            {"request": request, "teams": teams, "error_message": error_message},
+            status_code=400,
         )
     return RedirectResponse("/manage/teams", status_code=303)
 
@@ -324,25 +275,18 @@ async def delete_team(team_id: int):
 
 @app.post("/manage/teams/{team_id}/edit")
 async def edit_team(
-    request: Request,
-    team_id: int,
-    name: str = Form(...),
-    description: str = Form(""),
-    members: str = Form(""),
+    request: Request, team_id: int, name: str = Form(...), description: str = Form(""), members: str = Form("")
 ):
-    payload = {"name": name, "description": description, "members": _parse_team_members(members)}
+    payload = {"name": name, "description": description, "members": _parse_members(members)}
     response = await bff_request("PUT", f"/teams/{team_id}", json=payload)
     if response.status_code != 200:
         teams_response = await bff_request("GET", "/teams")
         teams = teams_response.json() if teams_response.status_code == 200 else []
+        error_message = _extract_error_message(response, "Unable to update team.")
         return templates.TemplateResponse(
             "manage_teams.html",
-            {
-                "request": request,
-                "teams": teams,
-                "error": _extract_error_detail(response),
-            },
-            status_code=response.status_code,
+            {"request": request, "teams": teams, "error_message": error_message},
+            status_code=400,
         )
     return RedirectResponse("/manage/teams", status_code=303)
 
